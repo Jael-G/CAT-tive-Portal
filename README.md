@@ -58,6 +58,8 @@ The display is used to demonstrate valuable information in a fun and cute way. H
 
 ![Waiting Mode Display](https://github.com/Jael-G/CAT-tive-Portal/blob/main/images/WaitingDisplay.png)
 
+UPDATE: The waiting mode no longer displays "Waiting...". Now, in its place it indicates the ESSID of the access point, under the ESSID it indicates the channel and under that the authmode being used. The display image for this mode will be updated when I have more time. 
+
 In this mode, the most important data present is the amount of captures so far in the upper left corner, and to the right, the amount of time the device has been on (Uptime). The device will be in this mode while the servers and access point are running. 
 
 2. Capture Mode
@@ -65,6 +67,24 @@ In this mode, the most important data present is the amount of captures so far i
 ![Capture Mode Display](https://github.com/Jael-G/CAT-tive-Portal/blob/main/images/CaptureDisplay.png)
 
 This mode appears for 5 seconds whenever a capture of credentials has been made in the captive portal. It shows some vital information about the capture. In the top left corner, it shows the amount of captures so far (which should be updated by 1). To the right of that, the website the credentials are from (based on the form sent by the captive portal). Under the upper bar to the left, the username and password submitted. Finally, on the lower right, it shows the number of the file where it will be stored, in this example 12 indicates the credentials are saved in `capture_12.csv`. A new `.csv` is created everytime the code is executed, increase the number of the capture file each time. 
+
+## Access Point
+The access point settings can be modified in the code. The essid, channel and authmode are shown in the display. The settings are:
+1. ESSID: The name the access point will have
+
+2. Password: The password to access, only works if authmode is changed from network.AUTH_OPEN
+
+3. Channel: The channel the access point will be on
+
+4. Authmode: The authentication method to be used. The authmode can be set using the network constant or the int value. The options are shown in the code, they are:
+
+```
+    * 0 || network.AUTH_OPEN         -- OPEN 
+    * 1 || network.AUTH_WEP          -- WEP
+    * 2 || network.AUTH_WPA-PSK      -- WPA-PSK
+    * 3 || network.AUTH_WPA2_PSK     -- WPA2-PSK
+    * 4 || network.AUTH_WPA_WPA2_PSK -- WPA/WPA2-PSK
+```
 
 ## Captive Portal
 What makes the captive portal so effective and useful is that many devices get a pop-up indicating that they need to log in to the network. In fact, in many instances it evens instantly redirects to the captive portal as soon as the person attempts to connect to the access point. After that, any credential sent is displayed and stored.

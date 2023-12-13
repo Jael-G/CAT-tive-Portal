@@ -1,20 +1,21 @@
 import _thread
 import json
 import os
+import network
 import time
 from machine import Pin, I2C
 import ssd1306
-from phew import server, access_point
+from phew import server
 from phew.dns import run_catchall
 from phew.logging import disable_logging_types, LOG_ALL
 
 # Disable phew logging
 # disable_logging_types(LOG_ALL)
 
-# Project Info
-VERSION = 1.0
+#Project Info
+VERSION = 1.1
 ARTHUR = 'Jael Gonzalez'
-GITHUB = ''
+GITHUB = 'https://github.com/Jael-G/CAT-tive-Portal/'
 
 # Hardware setup
 #Change scl and sda pins to match hardware
@@ -84,7 +85,15 @@ def animate():
 
             oled.text(f"({amount_of_captures:02})", 0, 5, 1)
             oled.text(f"UP{hours:02d}:{minutes:02d}:{seconds:02d}", 45, 5, 1)
-            oled.text(f"Waiting{'.' * (count + 1)}", 0, 17, 0)
+            
+            if len(wlan_AP_IF.config('essid')) > 16:
+                formatted_ap_name = wlan_AP_IF.config('essid')[:15] + '-'
+            else:
+                formatted_ap_name = wlan_AP_IF.config('essid')
+                
+            oled.text(f"{formatted_ap_name}", 0, 19, 0)
+            oled.text(f"CH {wlan_AP_IF.config('channel')}", 0, 28, 0)
+            oled.text(f"AU {wlan_AP_IF.config('authmode')}", 0, 37, 0)
             frame_content = cat_sleeping_animation[count]
             
         #Executed when a capture is made
@@ -132,12 +141,27 @@ def animate():
         elif count == FRAMES_NUM - 1 and direction == 1:
             direction = -1
 
+
 #################SERVER CODE#################
+
+'''
+Authmodes
+* 0 || network.AUTH_OPEN         -- OPEN 
+* 1 || network.AUTH_WEP          -- WEP
+* 2 || network.AUTH_WPA-PSK      -- WPA-PSK
+* 3 || network.AUTH_WPA2_PSK     -- WPA2-PSK
+* 4 || network.AUTH_WPA_WPA2_PSK -- WPA/WPA2-PSK
+'''
 # Setting up server and access point
 ACCESS_POINT_ESSID = "WifiPortal"
-PASSWORD = None
+PASSWORD = ''
+CHANNEL = 4
+AUTHMODE = network.AUTH_OPEN
+wlan_AP_IF = network.WLAN(network.AP_IF)
+wlan_AP_IF.active(True)
 
-wlan_AP_IF = access_point(ACCESS_POINT_ESSID, PASSWORD)
+
+wlan_AP_IF.config(essid=ACCESS_POINT_ESSID, password=PASSWORD, channel=CHANNEL, authmode=AUTHMODE)
 
 @server.route("/login", methods=["GET", "POST"])
 def login_page(request):
@@ -170,4 +194,5 @@ def catchall(request):
 _thread.start_new_thread(animate, [])
 run_catchall(wlan_AP_IF.ifconfig()[0])
 server.run()
+
 
