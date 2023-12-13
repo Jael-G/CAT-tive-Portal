@@ -1,4 +1,4 @@
-![CAT-tive Portal](/CAT-tivePortalBanner.png)
+![CAT-tive Portal](https://github.com/Jael-G/CAT-tive-Portal/blob/main/images/CAT-tivePortalBanner.png)
 
 # CAT-tive Portal
 CAT-tive Portal is an ESP32 Micropython project made using the [Phew](https://github.com/pimoroni/phew) library. It hosts a basic captive portal that asks most devices to log in to be able to use the network and captures any log in credentials. It displays capture data on an SSD1306 Display, and stores the information in `.csv` files.
@@ -56,13 +56,13 @@ The display should instantly light up and show the cat sleeping animation. The a
 The display is used to demonstrate valuable information in a fun and cute way. Here is what every part of the display indicates:
 1. Waiting Mode
 
-![Waiting Mode Display](/WaitingDisplay.png)
+![Waiting Mode Display](https://github.com/Jael-G/CAT-tive-Portal/blob/main/images/WaitingDisplay.png)
 
 In this mode, the most important data present is the amount of captures so far in the upper left corner, and to the right, the amount of time the device has been on (Uptime). The device will be in this mode while the servers and access point are running. 
 
 2. Capture Mode
 
-![Capture Mode Display](/CaptureDisplay.png)
+![Capture Mode Display](https://github.com/Jael-G/CAT-tive-Portal/blob/main/images/CaptureDisplay.png)
 
 This mode appears for 5 seconds whenever a capture of credentials has been made in the captive portal. It shows some vital information about the capture. In the top left corner, it shows the amount of captures so far (which should be updated by 1). To the right of that, the website the credentials are from (based on the form sent by the captive portal). Under the upper bar to the left, the username and password submitted. Finally, on the lower right, it shows the number of the file where it will be stored, in this example 12 indicates the credentials are saved in `capture_12.csv`. A new `.csv` is created everytime the code is executed, increase the number of the capture file each time. 
 
@@ -71,7 +71,7 @@ What makes the captive portal so effective and useful is that many devices get a
 
 The project comes with an example of a captive portal. `Goog` is a clone of Google's Gmail login page.
 
-![Goog Captive Portal](/images/captiveportal.png)
+![Goog Captive Portal](https://github.com/Jael-G/CAT-tive-Portal/blob/main/images/captiveportal.png)
 
 
  In the template, it showcases one of the most important features to keep in mind when creating a webpage for this project, the form. The form HAS to contain 3 items, the username, the password, and finally the website. 
