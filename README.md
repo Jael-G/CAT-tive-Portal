@@ -89,7 +89,7 @@ The access point settings can be modified in the code. The essid, channel and au
 ## Captive Portal
 What makes the captive portal so effective and useful is that many devices get a pop-up indicating that they need to log in to the network. In fact, in many instances it evens instantly redirects to the captive portal as soon as the person attempts to connect to the access point. After that, any credential sent is displayed and stored.
 
-The project comes with an example of a captive portal. `Goog` is a clone of Google's Gmail login page.
+The project comes with two examples of captive portals. `Goog` is a clone of Google's Gmail login page and is the default one. `Pear` is a clone of Apple's iCloud login page. You can modify the page being rendered as portal by editing the `LOGIN_RESPONSE` in the code.
 
 ![Goog Captive Portal](https://github.com/Jael-G/CAT-tive-Portal/blob/main/images/captiveportal.png)
 
